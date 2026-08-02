@@ -1,0 +1,4 @@
+interface:
+  display_name: "3D Product Experience"
+  short_description: "Build and evolve Three.js/glTF product experiences safely"
+  default_prompt: "Use $3d-product-experience to plan, implement, validate, and document a configurable 3D product experience."
