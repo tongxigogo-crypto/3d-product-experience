@@ -98,6 +98,8 @@ Do not install indoor-360 packages for a bottle task. Do not replace a realtime 
 
 ### 6. Validate in layers
 
+When an approved product crosses renderer versions, devices, Web/Mini adapters, or compression paths, apply `references/color-parity-contract.md` before visual sign-off. Eyeballing, a single RGB pixel, fixed page coordinates without a framing contract, or a global average Delta E are not release evidence.
+
 Run the repository’s applicable commands, normally:
 
 ```text
@@ -137,6 +139,7 @@ Keep the engine extensible through data and adapters, not speculative abstractio
 - `references/research-integration-matrix.md` — researched Three.js/GitHub options and the POC gates for each.
 - `references/poc-decision-record.md` — comparable plugin POC measurements, thresholds, and accept/defer/reject record.
 - `references/qa-and-evidence-contract.md` — visual, automated, accessibility, performance, and evidence gates.
+- `references/color-parity-contract.md` — repeatable cross-renderer capture conditions, semantic region sampling, material-specific CIEDE2000 gates, and invalid-evidence rules.
 - `scripts/validate-product-manifest.mjs` — dependency-free structural validator for a product manifest; run basic mode for legacy manifests and `--strict --strict-privacy` for new product contracts.
 - `scripts/verify-media-privacy.mjs` — read-only `exiftool` check for GPS/location metadata before a media derivative enters GitHub or deployment.
 
