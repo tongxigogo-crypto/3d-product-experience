@@ -28,6 +28,17 @@ At minimum capture desktop and phone-sized evidence for:
 
 Check silhouette, proportions, label legibility, material response, light/highlight obstruction, occlusion, subject hierarchy, safe-area cropping, touch-target separation, and whether a gesture conflicts with a button. Do not accept “looks right” from a single angle.
 
+For runtime decals or transparent artwork overlays, verify their transform and
+occlusion contract explicitly: parent them to the product/part coordinate
+system, keep depth testing enabled, prefer the physically correct face side,
+and capture both the intended front/top view and the opposite/back/bottom view.
+An overlay that remains visible through the product or appears screen-fixed is
+a release failure even when its default screenshot is correct.
+
+## Color consistency hard gate
+
+When the same approved product is rendered by different engines, revisions, devices, platform adapters, or compression paths, read and apply `color-parity-contract.md`. Measured color evidence must pass before visual review; visual review remains mandatory for geometry, highlights, metal response, transparency, and hierarchy. A visual-only comparison is not color acceptance.
+
 ## Interaction and accessibility gates
 
 - Do not bind a tap target so broadly that it steals a touch rotation gesture.
@@ -56,6 +67,8 @@ For supplied photos or video, run `scripts/verify-media-privacy.mjs --file ...` 
 - Source/provenance and privacy handling:
 - Commands and results:
 - Browser viewport/device:
+- Color capture contract (asset/camera/canvas/DPR/output/environment):
+- Semantic region statistics and material-class thresholds:
 - Screenshots/video:
 - Visual findings:
 - Accessibility/fallback findings:
