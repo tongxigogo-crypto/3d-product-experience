@@ -1,5 +1,7 @@
 # 3D Product Experience
 
+[![ci](https://github.com/tongxigogo-crypto/3d-product-experience/actions/workflows/ci.yml/badge.svg)](https://github.com/tongxigogo-crypto/3d-product-experience/actions/workflows/ci.yml)
+
 A contract toolkit for Three.js / glTF product viewers.
 
 It does not render anything. It stops a product viewer from silently changing an
