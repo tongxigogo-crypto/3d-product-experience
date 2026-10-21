@@ -19,7 +19,7 @@ The contract is semantic and renderer-neutral. Web, Mini Program, and future pan
       "id": "shell",
       "semantic": "approved-product-shell",
       "assetVariants": { "web": "shell-web", "mini": "shell-mini", "fallback": "poster" },
-      "materialIds": ["ceramic", "gilt"],
+      "materialIds": ["finish-a", "finish-b"],
       "cameraPreset": "front"
     }
   ],
@@ -40,6 +40,60 @@ The contract is semantic and renderer-neutral. Web, Mini Program, and future pan
 - `capabilities` is additive. A product without `assembly` must not load opening-only assets; a product with `spatial` must also declare device budgets and fallback nodes.
 - `provenance` and asset hashes make a promotion/reversal auditable.
 
+## Spatial scene seam
+
+Keep scene state separate from product state. A first showroom or floor-plan
+POC can use the following renderer-neutral records:
+
+```text
+SceneManifest {
+  schemaVersion,
+  sceneId,
+  runtime,
+  entryCamera,
+  anchors,
+  rooms?,
+  portals?,
+  fallbackContent,
+  deviceBudget
+}
+
+SceneProductAnchor {
+  anchorId,
+  productId,
+  sceneObjectId,
+  roomId?,
+  transform,
+  hitTarget,
+  viewerRoute
+}
+
+SceneSnapshot {
+  version,
+  sceneId,
+  cameraPosition,
+  controlsTarget,
+  zoom?,
+  selectedProductId?
+}
+
+ViewerSession {
+  sessionId,
+  productId,
+  viewerUrl,
+  returnSnapshotKey
+}
+```
+
+The Scene Viewer owns scene coordinates, anchors, scene camera and return
+state. The Product Viewer owns product GLB loading, materials, product camera,
+and product interaction. An anchor should reference a lightweight proxy or
+hotspot rather than duplicate a frozen product GLB in the scene. The host owns
+the Overlay/iframe and Back action; do not require a legacy Viewer to expose
+its internal camera or debug API. The first POC pauses scene rendering while a
+Product Viewer is open. Only mobile memory evidence can justify a second
+dispose/recreate plus snapshot-restore POC.
+
 ## Complexity ladder
 
 ### `static`
@@ -56,11 +110,20 @@ Independent parts, state endpoints, optional animation, camera snapshot/restore,
 
 ### `spatial`
 
-Linked panoramas or a navigable room with node preloading, bounds, occlusion, lighting, camera paths, memory budgets, and device-specific fallback. Keep this separate from the bottle viewer until a real requirement exists.
+Linked panoramas or a navigable room with `SceneManifest`, product anchors,
+scene snapshot/restore, node preloading, bounds, occlusion, lighting, camera
+paths, memory budgets, and device-specific fallback. The first slice may be a
+lightweight showroom with two clickable product proxies and a host Overlay into
+existing Product Viewers; free walk, collision, navmesh, multi-room portals,
+and Mini spatial parity are separate later capabilities. Keep this separate
+from the scene Product Viewer until a real requirement exists.
 
 ## Extending safely
 
 Add a new capability by adding a contract field, an isolated experience module, and tests for the old capabilities. Do not create an all-purpose viewer API until a second product proves the seam. If Web and Mini diverge, preserve shared semantic IDs and content while allowing platform-specific asset variants and renderers.
+
+The entry skill owns Capability Registry routing. This contract only defines
+the manifest and POC fields that must be recorded after a route is selected.
 
 ## Validation modes
 

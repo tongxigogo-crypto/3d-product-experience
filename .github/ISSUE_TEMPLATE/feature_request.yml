@@ -1,0 +1,46 @@
+name: Contract or capability proposal
+description: Propose a new manifest field, capability level, or validation rule.
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A new rule has to be renderer-neutral and product-neutral. If it only works
+        because your product has that shape, describe the shape instead of the rule.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What real failure does this prevent?
+      description: Describe the incident, not the abstraction. "A re-export moved the silhouette 4% and CI stayed green" beats "we need better validation".
+    validations:
+      required: true
+
+  - type: dropdown
+    id: layer
+    attributes:
+      label: Where does it belong?
+      options:
+        - Manifest contract (references/product-capability-contract.md)
+        - Validator rule (src/validate.mjs)
+        - Privacy rule
+        - Evidence / QA contract
+        - Agent procedure (SKILL.md)
+    validations:
+      required: true
+
+  - type: textarea
+    id: shape
+    attributes:
+      label: Proposed field or rule
+      render: json
+    validations:
+      required: false
+
+  - type: textarea
+    id: migration
+    attributes:
+      label: What happens to existing manifests?
+      description: Must legacy manifests keep passing basic mode? Which mode gates the new rule?
+    validations:
+      required: true

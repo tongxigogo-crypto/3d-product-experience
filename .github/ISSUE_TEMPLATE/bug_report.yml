@@ -1,0 +1,56 @@
+name: Bug report
+description: A manifest fails validation, or the validator accepts something it should reject.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Remove brand names, customer data, private absolute paths and GPS-bearing
+        media before pasting a manifest.
+
+  - type: dropdown
+    id: surface
+    attributes:
+      label: What broke?
+      options:
+        - Validator rejects a manifest it should accept
+        - Validator accepts a manifest it should reject
+        - Privacy check behaviour
+        - CLI or exit code
+        - Documentation contradicts behaviour
+        - Demo page
+    validations:
+      required: true
+
+  - type: textarea
+    id: command
+    attributes:
+      label: Exact command
+      placeholder: node src/cli.mjs validate --file manifest.json --strict --strict-privacy
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: manifest
+    attributes:
+      label: Minimal manifest
+      description: The smallest manifest that reproduces the issue, with brand data removed.
+      render: json
+    validations:
+      required: false
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected vs actual
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version and Node version
+      placeholder: 0.1.0 on Node 22.22.2
+    validations:
+      required: true

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3D Product Experience — contract demo</title>
+<meta name="description" content="A reference Three.js adapter driven by a product manifest contract.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%232f5d50'/%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #f5f4f1;
+    --panel: #ffffff;
+    --ink: #1c1b19;
+    --muted: #6b6660;
+    --line: #dcd8d1;
+    --accent: #2f5d50;
+    --warn: #8a4b12;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font: 400 15px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  #app {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    height: 100%;
+  }
+  #stage { position: relative; min-width: 0; }
+  #c { display: block; width: 100%; height: 100%; }
+  #hud {
+    border-left: 1px solid var(--line);
+    background: var(--panel);
+    padding: 22px 20px;
+    overflow-y: auto;
+  }
+  h1 { font-size: 15px; margin: 0 0 4px; letter-spacing: -0.01em; }
+  .sub { color: var(--muted); font-size: 12.5px; margin: 0 0 18px; }
+  .block { border-top: 1px solid var(--line); padding-top: 14px; margin-top: 14px; }
+  .block:first-of-type { border-top: 0; padding-top: 0; margin-top: 0; }
+  .label {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 10.5px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .presets { display: flex; flex-wrap: wrap; gap: 6px; }
+  button {
+    font: inherit;
+    font-size: 12.5px;
+    padding: 6px 11px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: #fbfaf8;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  button:hover { border-color: var(--accent); }
+  button[aria-pressed="true"] {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  dl { margin: 0; font-size: 12.5px; }
+  dl div { display: flex; justify-content: space-between; gap: 12px; padding: 3px 0; }
+  dt { color: var(--muted); }
+  dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+  code { font-size: 11.5px; background: #f0eee9; padding: 1px 5px; border-radius: 4px; }
+  .note { color: var(--muted); font-size: 12px; margin: 10px 0 0; }
+  .hotspot {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    border: 1.5px solid var(--accent);
+    background: rgba(255,255,255,0.86);
+    color: var(--accent);
+    font-size: 11px;
+    line-height: 19px;
+    text-align: center;
+    cursor: pointer;
+    padding: 0;
+  }
+  .hotspot::after {
+    content: attr(data-label);
+    position: absolute;
+    left: 26px; top: 50%;
+    transform: translateY(-50%);
+    white-space: nowrap;
+    font-size: 11.5px;
+    color: var(--ink);
+    background: rgba(255,255,255,0.92);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 2px 6px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 120ms ease;
+  }
+  .hotspot:hover::after, .hotspot:focus-visible::after { opacity: 1; }
+  #fallback {
+    position: absolute; inset: 0;
+    display: grid; place-content: center; gap: 8px;
+    text-align: center; padding: 24px;
+    background: linear-gradient(160deg, #efede8, #dedad2);
+  }
+  #fallback[hidden] { display: none; }
+  #fallback strong { font-size: 14px; }
+  #fallback span { color: var(--muted); font-size: 12.5px; max-width: 34ch; }
+  #status { font-size: 12px; color: var(--muted); margin-top: 14px; }
+  #status[data-state="error"] { color: var(--warn); }
+  @media (prefers-reduced-motion: reduce) {
+    .hotspot::after { transition: none; }
+  }
+  @media (max-width: 820px) {
+    #app { grid-template-columns: 1fr; grid-template-rows: 1fr auto; }
+    #hud { border-left: 0; border-top: 1px solid var(--line); max-height: 46vh; }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="stage">
+    <canvas id="c" aria-label="3D product viewer"></canvas>
+    <div id="fallback" hidden>
+      <strong>Poster fallback</strong>
+      <span>The model could not load. This is the declared fallback state, not an error page.</span>
+    </div>
+  </div>
+
+  <aside id="hud">
+    <h1>Contract demo</h1>
+    <p class="sub">Reference adapter for <code>3d-product-experience</code>. The manifest declares intent; this file supplies numbers.</p>
+
+    <div class="block">
+      <div class="label">Camera presets</div>
+      <div class="presets" id="presets" role="group" aria-label="Camera presets"></div>
+      <p class="note">Keys <code>1</code>–<code>3</code>, <code>Esc</code> to restore.</p>
+    </div>
+
+    <div class="block">
+      <div class="label">Manifest</div>
+      <dl id="manifestFacts"></dl>
+    </div>
+
+    <div class="block">
+      <div class="label">Validation</div>
+      <p class="note" id="status">Reading manifest…</p>
+    </div>
+
+    <div class="block">
+      <div class="label">Model</div>
+      <p class="note">Khronos <em>Damaged Helmet</em>, CC BY 4.0, loaded from a CDN as a stand-in product. Not distributed with this repository.</p>
+    </div>
+  </aside>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.185.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.185.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const MODEL_URL =
+  'https://cdn.jsdelivr.net/gh/KhronosGroup/glTF-Sample-Assets@main/Models/DamagedHelmet/glTF-Binary/DamagedHelmet.glb';
+
+// Adapter-owned numbers. The manifest owns the semantic ID and intent only.
+const PRESET_NUMBERS = {
+  front: { position: [0, 0.05, 3.35], target: [0, 0, 0] },
+  'three-quarter': { position: [2.3, 0.9, 2.6], target: [0, 0.05, 0] },
+  macro: { position: [0.95, 0.55, 1.4], target: [0.12, 0.18, 0.28] },
+};
+
+// Hotspots declare a semantic node; this adapter maps them to local anchors.
+const HOTSPOT_ANCHORS = {
+  closure: new THREE.Vector3(0, 0.45, 0.42),
+  surface: new THREE.Vector3(0, -0.22, 0.52),
+};
+
+const canvas = document.getElementById('c');
+const stage = document.getElementById('stage');
+const fallback = document.getElementById('fallback');
+const presetBar = document.getElementById('presets');
+const statusEl = document.getElementById('status');
+const factsEl = document.getElementById('manifestFacts');
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xf5f4f1);
+
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+
+const camera = new THREE.PerspectiveCamera(38, 1, 0.05, 100);
+camera.position.set(0, 0.05, 3.1);
+
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = !reduceMotion;
+controls.dampingFactor = 0.08;
+controls.minDistance = 0.9;
+controls.maxDistance = 6;
+controls.target.set(0, 0, 0);
+
+const key = new THREE.DirectionalLight(0xffffff, 1.1);
+key.position.set(2.4, 3.2, 2.6);
+scene.add(key);
+scene.add(new THREE.AmbientLight(0xffffff, 0.35));
+
+function resize() {
+  const w = stage.clientWidth;
+  const h = stage.clientHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+
+function tweenTo(preset) {
+  const target = PRESET_NUMBERS[preset.id];
+  if (!target) return;
+  const fromPos = camera.position.clone();
+  const fromTarget = controls.target.clone();
+  const toPos = new THREE.Vector3(...target.position);
+  const toTarget = new THREE.Vector3(...target.target);
+
+  if (reduceMotion) {
+    camera.position.copy(toPos);
+    controls.target.copy(toTarget);
+    controls.update();
+    return;
+  }
+
+  const start = performance.now();
+  const duration = 520;
+  const step = (now) => {
+    const t = Math.min(1, (now - start) / duration);
+    const e = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+    camera.position.lerpVectors(fromPos, toPos, e);
+    controls.target.lerpVectors(fromTarget, toTarget, e);
+    controls.update();
+    if (t < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+let activePreset = null;
+function setActivePreset(id) {
+  activePreset = id;
+  for (const btn of presetBar.querySelectorAll('button')) {
+    btn.setAttribute('aria-pressed', String(btn.dataset.preset === id));
+  }
+}
+
+function buildPresetButtons(presets) {
+  presetBar.replaceChildren();
+  for (const preset of presets) {
+    const known = Boolean(PRESET_NUMBERS[preset.id]);
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.dataset.preset = preset.id;
+    btn.textContent = preset.id;
+    btn.title = known ? preset.intent ?? '' : `No adapter number for "${preset.id}"`;
+    btn.setAttribute('aria-pressed', 'false');
+    btn.disabled = !known;
+    btn.addEventListener('click', () => {
+      setActivePreset(preset.id);
+      tweenTo(preset);
+    });
+    presetBar.append(btn);
+  }
+}
+
+function buildHotspots(hotspots) {
+  const layer = document.createElement('div');
+  layer.id = 'hotspots';
+  layer.style.position = 'absolute';
+  layer.style.inset = '0';
+  layer.style.pointerEvents = 'none';
+  stage.append(layer);
+
+  const mounts = [];
+  for (const hotspot of hotspots) {
+    const anchor = HOTSPOT_ANCHORS[hotspot.id];
+    if (!anchor) continue;
+    const el = document.createElement('button');
+    el.type = 'button';
+    el.className = 'hotspot';
+    el.dataset.label = hotspot.label ?? hotspot.id;
+    el.textContent = 'i';
+    el.setAttribute('aria-label', hotspot.label ?? hotspot.id);
+    el.style.pointerEvents = 'auto';
+    el.addEventListener('click', () => {
+      statusEl.textContent = `Hotspot "${hotspot.id}" → fallback card "${hotspot.fallbackContent}".`;
+    });
+    layer.append(el);
+    mounts.push({ el, anchor });
+  }
+  return mounts;
+}
+
+function projectHotspots(mounts) {
+  const v = new THREE.Vector3();
+  for (const { el, anchor } of mounts) {
+    v.copy(anchor).project(camera);
+    const visible = v.z < 1;
+    el.style.display = visible ? 'block' : 'none';
+    el.style.left = `${(v.x * 0.5 + 0.5) * 100}%`;
+    el.style.top = `${(-v.y * 0.5 + 0.5) * 100}%`;
+  }
+}
+
+function renderManifestFacts(manifest) {
+  const source = manifest.provenance ?? manifest.sourcePolicy ?? {};
+  const rows = [
+    ['productId', manifest.productId ?? '—'],
+    ['schemaVersion', manifest.schemaVersion ?? '—'],
+    ['capabilities', (manifest.capabilities ?? []).join(', ') || '—'],
+    ['sceneNodes', String((manifest.sceneNodes ?? []).length)],
+    ['assets', String((manifest.assets ?? []).length)],
+    ['baseline', (source.baselineSha256 ?? 'missing').slice(0, 12) + '…'],
+  ];
+  factsEl.replaceChildren();
+  for (const [k, v] of rows) {
+    const row = document.createElement('div');
+    const dt = document.createElement('dt');
+    const dd = document.createElement('dd');
+    dt.textContent = k;
+    dd.textContent = v;
+    row.append(dt, dd);
+    factsEl.append(row);
+  }
+}
+
+async function main() {
+  let manifest;
+  try {
+    manifest = await fetch('./manifest.json').then((r) => {
+      if (!r.ok) throw new Error(`manifest HTTP ${r.status}`);
+      return r.json();
+    });
+  } catch (error) {
+    statusEl.dataset.state = 'error';
+    statusEl.textContent = `Manifest unavailable: ${error.message}`;
+    return;
+  }
+
+  renderManifestFacts(manifest);
+  buildPresetButtons(manifest.cameraPresets ?? []);
+
+  const caps = manifest.capabilities ?? [];
+  const mounts = caps.includes('interactive') ? buildHotspots(manifest.hotspots ?? []) : [];
+
+  statusEl.textContent = `Manifest loaded: ${(manifest.cameraPresets ?? []).length} presets, ${(manifest.hotspots ?? []).length} hotspots. Model loading…`;
+
+  const loader = new GLTFLoader();
+  loader.load(
+    MODEL_URL,
+    (gltf) => {
+      const model = gltf.scene;
+      const box = new THREE.Box3().setFromObject(model);
+      const center = box.getCenter(new THREE.Vector3());
+      const size = box.getSize(new THREE.Vector3());
+      model.position.sub(center);
+      const scale = 1.45 / Math.max(size.x, size.y, size.z);
+      model.scale.setScalar(scale);
+      scene.add(model);
+
+      statusEl.textContent = `Ready. Model normalized to 1.45 units. ${mounts.length} hotspot(s) projected per frame.`;
+
+      const loop = () => {
+        requestAnimationFrame(loop);
+        controls.update();
+        projectHotspots(mounts);
+        renderer.render(scene, camera);
+      };
+      loop();
+      setActivePreset('front');
+    },
+    undefined,
+    () => {
+      fallback.hidden = false;
+      statusEl.dataset.state = 'error';
+      statusEl.textContent = 'Model failed to load. Poster fallback shown; the page stays usable.';
+    },
+  );
+
+  addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      setActivePreset('front');
+      tweenTo({ id: 'front' });
+      return;
+    }
+    const index = Number(event.key);
+    if (!Number.isInteger(index) || index < 1) return;
+    const preset = (manifest.cameraPresets ?? [])[index - 1];
+    if (preset) {
+      setActivePreset(preset.id);
+      tweenTo(preset);
+    }
+  });
+}
+
+addEventListener('resize', resize);
+resize();
+main();
+</script>
+</body>
+</html>

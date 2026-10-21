@@ -1,0 +1,76 @@
+{
+  "schemaVersion": "0.1",
+  "productId": "demo-vessel-in-room",
+  "provenance": {
+    "baselineAsset": "assets/demo-vessel.glb",
+    "baselineSha256": "6f1ed002ab5595859014ebf0951522d9a31c0f4c1b0b9f2d6b2f9c8b3e6a1d47",
+    "privacyPolicy": "Raw reference photos stay local-only. Only no-location derivatives are committed."
+  },
+  "capabilities": ["static", "spatial"],
+  "platforms": {
+    "web": { "renderer": "three.js", "status": "current" },
+    "mini": { "renderer": "platform-adapter", "status": "planned" }
+  },
+  "materials": [
+    { "id": "finish-a", "class": "diffuse", "role": "body" }
+  ],
+  "hotspots": [],
+  "cameraPresets": [
+    { "id": "entry", "intent": "room entry framing" },
+    { "id": "product-front", "intent": "product camera handed to the viewer" }
+  ],
+  "sceneNodes": [
+    {
+      "id": "shell",
+      "semantic": "approved-product-shell",
+      "materialIds": ["finish-a"],
+      "cameraPreset": "product-front",
+      "assetVariants": {
+        "web": "shell-web",
+        "mini": null,
+        "fallback": "poster"
+      }
+    }
+  ],
+  "assets": [
+    {
+      "id": "shell-web",
+      "path": "assets/demo-vessel.glb",
+      "role": "runtime",
+      "sha256": "6f1ed002ab5595859014ebf0951522d9a31c0f4c1b0b9f2d6b2f9c8b3e6a1d47"
+    },
+    {
+      "id": "poster",
+      "path": "assets/demo-poster.png",
+      "role": "fallback",
+      "privacyStatus": "derived"
+    }
+  ],
+  "fallbackContent": {
+    "poster": "poster",
+    "failure": "2d-card"
+  },
+  "sceneManifest": {
+    "schemaVersion": "0.1",
+    "sceneId": "demo-room",
+    "runtime": "three.js",
+    "entryCamera": "entry",
+    "deviceBudget": {
+      "maxTextures": 12,
+      "maxTextureSize": 2048,
+      "targetFpsMobile": 30,
+      "targetFpsDesktop": 50
+    },
+    "anchors": [
+      {
+        "anchorId": "anchor-1",
+        "productId": "demo-vessel-in-room",
+        "sceneObjectId": "proxy-1",
+        "transform": { "position": [0, 0, -2.4], "rotationY": 0, "scale": 1 },
+        "hitTarget": "proxy-1-hit",
+        "viewerRoute": "/viewer/demo-vessel"
+      }
+    ],
+    "fallbackContent": { "poster": "poster", "failure": "2d-card" }
+  }
+}

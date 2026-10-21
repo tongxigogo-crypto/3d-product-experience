@@ -1,0 +1,50 @@
+{
+  "name": "3d-product-experience",
+  "version": "0.2.0",
+  "description": "Contract toolkit for Three.js/glTF product viewers: freeze the approved asset, keep facts separate from demo assumptions, and gate changes on visual evidence.",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "p3d": "./src/cli.mjs"
+  },
+  "exports": {
+    ".": "./src/index.mjs",
+    "./validate": "./src/validate.mjs",
+    "./privacy": "./src/privacy.mjs"
+  },
+  "files": [
+    "src",
+    "scripts",
+    "references",
+    "SKILL.md",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "validate:examples": "node ./src/cli.mjs validate --file examples/minimal/manifest.json --strict --strict-privacy && node ./src/cli.mjs validate --file examples/spatial/manifest.json --strict --strict-privacy",
+    "check": "npm test && npm run validate:examples",
+    "demo": "node ./scripts/serve-demo.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "three.js",
+    "gltf",
+    "glb",
+    "product-viewer",
+    "3d",
+    "agent-skill",
+    "design-contract",
+    "visual-acceptance"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tongxigogo-crypto/3d-product-experience.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tongxigogo-crypto/3d-product-experience/issues"
+  },
+  "homepage": "https://github.com/tongxigogo-crypto/3d-product-experience#readme"
+}

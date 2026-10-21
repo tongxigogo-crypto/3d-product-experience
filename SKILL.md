@@ -1,6 +1,6 @@
 ---
 name: 3d-product-experience
-description: Use when building, repairing, or extending a Three.js/glTF product experience, especially an AI-generated model, a static assembly/opening state, a configurable product viewer, a Web/Mini Program shared contract, or a future panorama/room path. Protects an approved visual baseline, separates product facts from demo assumptions, evaluates GitHub/Three.js options through scoped POCs, and requires desktop/mobile visual and automated evidence before delivery.
+description: Use when building or repairing a Three.js/glTF product viewer or its Web/Mini semantic contract.
 ---
 
 # 3D Product Experience
@@ -21,7 +21,7 @@ Use the workflow for:
 
 1. **Freeze the approved baseline.** Record the path and SHA-256 of every accepted asset before editing. Never overwrite it, rescale it in place, or let a platform-compressed variant replace it. Create a versioned derivative such as `*-open-mode.glb` and keep a reversible manifest.
 2. **Keep facts separate from demo assumptions.** Label guessed dimensions, cavity depth, cap placement, lighting, and static poses as `demo`. Do not present a photo-based guess as a 1:1 digital twin. Measurements, tolerances, threads, and real motion require their own evidence and phase.
-3. **Preserve the silhouette and identity.** A requested detail must not change the approved bottle, cap, label proportions, color, typography, material response, or camera baseline unless the user explicitly approves a new product revision. Compare front, side, three-quarter, and macro views after every geometry/material change.
+3. **Preserve the silhouette and identity.** A requested detail must not change the approved product shell, parts, surface proportions, color, typography, material response, or camera baseline unless the user explicitly approves a new product revision. Compare front, side, three-quarter, and macro views after every geometry/material change.
 4. **Separate source, derivative, and runtime assets.** Keep editable AI/Blender sources and build artifacts outside `public/` when possible. Store provenance and hashes; make runtime GLBs reproducible or explain why they are hand-authored.
 5. **Protect private references.** Original phone photos, GPS EXIF, private customer material, and unlicensed source files stay local. Strip location metadata and create a no-location derivative before any GitHub or deployment handoff. Never place raw reference paths in a public manifest.
 6. **No research-only integration.** A README, benchmark, or GitHub repository is not evidence that a package works in this product. A package enters production only after a scoped POC, pinned versions, platform/license review, fallback, and visual/performance evidence.
@@ -29,9 +29,32 @@ Use the workflow for:
 
 ## Workflow
 
+### 0. Respect the Product 3D production boundary
+
+This Skill governs product-viewer contracts and evidence; it is not a Blender
+runtime or a claim that this repository contains a Blender/GLB/Three.js/Mini
+implementation. For modeling routes, Blender state, checkpoints, and Current →
+V1 → Future boundaries, read `references/product3d-production-boundary.md` and
+the project-local `docs/product3d/` audit only when the task concerns modeling
+architecture or production boundaries. Engineering diagnostics never
+replace user visual acceptance. External research remains **unverified** until a
+scoped POC or official source confirms it.
+
+For a new 3D task, before the baseline pass, check whether the project — or
+your own knowledge base — already keeps a 3D research / capability registry for
+the stack in use, and choose the route that matches the request once for that
+task. A registry is a retrieval order, not an automatic package choice; project
+code, lockfiles, and acceptance evidence remain authoritative. If there is no
+documented gap, default to `reuse`. Only after recording a gap,
+version/license, scoped POC, fallback, and rollback may you search GitHub,
+install a package, or change renderer.
+
 ### 1. Establish the baseline and evidence map
 
-Read the project contract, product manifest, asset register, prior review notes, and current tests before touching code. Inventory:
+Before touching code, read the portions of the project contract, product
+manifest, asset register, prior review notes, and current tests that apply to
+the requested change. Do not read unrelated test suites merely for
+completeness. Inventory:
 
 - approved model paths and hashes;
 - candidate/generated model paths and their provenance;
@@ -50,13 +73,13 @@ Use additive capability flags rather than product-specific branches:
 | `static` | one model, camera presets, poster fallback | asset variant, materials, camera, fallback |
 | `interactive` | orbit/zoom, hotspots, label or material cards | semantic nodes, hit target, keyboard/touch behavior, accessible fallback |
 | `assembly` | static or animated open/close/reveal states | independent parts, state endpoints, camera snapshot/restore, reduced-motion path |
-| `spatial` | linked panoramas or a navigable room | scene graph, node preloading, bounds, occlusion/lighting contract, device budget |
+| `spatial` | linked panoramas or a navigable room | `SceneManifest`, light proxy/product anchors, `SceneSnapshot`, host Overlay/session, node preloading, bounds, occlusion/lighting contract, device budget; free walk is not implied |
 
 Start at the smallest level that proves the request. A static opening demo is not a license to invent a screw thread or an animation. Keep `web`, `mini`, and `fallback` asset variants explicit even when only `web` exists.
 
 ### 3. Build a renderer-independent product contract
 
-Define `productId`, `sceneNodes`, `materials`, `hotspots`, `cameraPresets`, `assetVariants`, `fallbackContent`, `capabilities`, `platforms`, and `provenance` in a machine-readable manifest. Web and Mini Program share semantic content and asset intent, not a renderer or loader implementation. A platform adapter may choose a different Three.js version, compression, event lifecycle, and fallback.
+Define `productId`, `sceneNodes`, `materials`, `hotspots`, `cameraPresets`, `assetVariants`, `fallbackContent`, `capabilities`, `platforms`, and `provenance` in the existing machine-readable product manifest, extending it only with fields required by this task. Do not create a parallel manifest or a second system. For spatial work, keep a separate `SceneManifest`, `SceneProductAnchor`, `SceneSnapshot`, and `ViewerSession` contract; a Scene Viewer owns scene coordinates and return state, while a Product Viewer owns product GLB loading, materials, product camera, and interaction. Web and Mini Program share semantic content and asset intent, not a renderer or loader implementation. A platform adapter may choose a different Three.js version, compression, event lifecycle, and fallback.
 
 Keep the runtime split into:
 
@@ -67,21 +90,15 @@ Keep the runtime split into:
 
 Do not extract a large SDK after one product. Add a second product contract test first; extract only the seams both products actually use.
 
-### 4. Handle AI-generated model candidates safely
+### 4. Handle candidates and product-specific states
 
-Treat Hunyuan AI (or another generator) as a geometry/material starting point, not as brand truth. Record tool/model version, prompt or input references, seed if available, source hash, units, transforms, and derivative steps. Then:
-
-1. preserve the generated source unchanged;
-2. audit the silhouette against approved V1/reference photos;
-3. remove hallucinated text, logos, embossing, white rectangles, side labels, and residual colored glyphs;
-4. rebuild brand typography from an approved source as a decal/geometry/material layer;
-5. separate ceramic, metal/gilt, transparent stopper, liner, and liquid materials where the experience needs them;
-6. validate UVs and atlas sampling so a cap never samples bottle text or develops a texture spike;
-7. compare macro cap/mouth views and full-bottle views before considering the derivative.
-
-If the candidate cannot meet the visual contract, keep it as a quarantined preview and do not substitute it for the approved runtime model.
-
-For an opening/reveal demo, make the parts independently addressable. Put the cap, liner, stopper, and emblem in a stable node contract; use one coordinate system for bounds, pivot, and overlays. Save camera target, distance, azimuth, elevation, and rotation before entering the state. Escape or “restore” must return that snapshot; Home must return the documented default. Assert these transitions in tests and inspect them in a browser. A missing top emblem or a cap that becomes a disk is a release failure, not a polish item.
+For AI/generated candidates, read `references/ai-model-provenance-and-recovery.md`
+for provenance, privacy, quarantine, UV, and material rules. For Blender
+production boundaries and product-family modeling routes, use
+`references/product3d-production-boundary.md` and the project audit. For an
+opening/reveal state, keep parts, pivots, camera snapshots, restore behavior,
+and reduced-motion checks in the product manifest and evidence record. A
+candidate never replaces the approved runtime asset before visual acceptance.
 
 ### 5. Integrate Three.js research incrementally
 
@@ -94,11 +111,24 @@ Keep the existing Three.js/GLTFLoader/KTX2/Meshopt/LOD path unless a measured re
 5. preserve the current fallback and visual baseline;
 6. record accept, defer, or reject with deletion/rollback steps.
 
-Do not install indoor-360 packages for a bottle task. Do not replace a realtime viewer with a scroll/pre-rendered system without an explicit product decision.
+Do not install indoor-360 packages for a single-product task. Do not replace a realtime viewer with a scroll/pre-rendered system without an explicit product decision.
+
+### 5.1 Spatial scene POC
+
+Use this only when the user asks to enter or navigate a 3D space. Follow the
+`SceneManifest` / `SceneProductAnchor` / `SceneSnapshot` / host Overlay boundary
+in `references/product-capability-contract.md`; the first slice uses lightweight
+anchors and an existing Product Viewer. Defer free walk, collision, navmesh,
+multi-room portals, large assets, and Mini spatial parity until browser and
+mobile evidence satisfies the explicit acceptance contract.
 
 ### 6. Validate in layers
 
-When an approved product crosses renderer versions, devices, Web/Mini adapters, or compression paths, apply `references/color-parity-contract.md` before visual sign-off. Eyeballing, a single RGB pixel, fixed page coordinates without a framing contract, or a global average Delta E are not release evidence.
+For B2B page order, responsive 3D interaction, accessibility, privacy, and
+visual evidence, read `references/qa-and-evidence-contract.md`. Apply
+`references/color-parity-contract.md` when an approved product crosses renderer,
+device, adapter, or compression boundaries. Asset acceptance and page readiness
+remain separate gates.
 
 Run the repository’s applicable commands, normally:
 
@@ -113,8 +143,9 @@ The exact command names are project-owned. At minimum verify:
 - new GLB nodes/materials/variants satisfy the manifest;
 - no raw GPS/private path is shipped;
 - loading failure, WebGL recovery, poster/2D fallback, reduced motion, keyboard, screen reader, and touch behavior remain usable;
-- opening/restore/Home state transitions preserve the camera and do not conflict with mobile rotation gestures;
-- full-bottle silhouette, cap side/interior, mouth/stopper, top artwork, label typography, material response, subject hierarchy, and safe areas are correct at desktop and phone sizes;
+- if `spatial` is enabled, `SceneManifest` anchors resolve to the correct Product Viewer, the host restores a versioned `SceneSnapshot`, an unavailable Viewer leaves the scene usable, and the desktop/mobile return path has browser evidence;
+- when opening/reveal is in scope, opening/restore/Home state transitions preserve the camera and do not conflict with mobile rotation gestures;
+- when a specific product is in scope, full-product silhouette, part side/interior, opening/closure, top artwork, surface typography, material response, subject hierarchy, and safe areas are correct at desktop and phone sizes;
 - warnings are classified and recorded rather than silently ignored.
 
 Capture command output, hashes, browser screenshots or video, viewport/device, and known limitations in an evidence record. Never call a change final when only a build passed.
@@ -134,6 +165,7 @@ Keep the engine extensible through data and adapters, not speculative abstractio
 
 ## Included references and script
 
+- `references/product3d-production-boundary.md` — modeling/runtime boundary, Blender state rules, and the Current → V1 → Future maturity contract.
 - `references/ai-model-provenance-and-recovery.md` — generated-model failure modes, provenance, and privacy rules.
 - `references/product-capability-contract.md` — renderer-neutral manifest shape and complexity ladder.
 - `references/research-integration-matrix.md` — researched Three.js/GitHub options and the POC gates for each.

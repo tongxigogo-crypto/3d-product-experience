@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "0.1",
+  "productId": "demo-vessel",
+  "provenance": {
+    "baselineAsset": "assets/demo-vessel.glb",
+    "baselineSha256": "6f1ed002ab5595859014ebf0951522d9a31c0f4c1b0b9f2d6b2f9c8b3e6a1d47",
+    "privacyPolicy": "Raw reference photos stay local-only. Only no-location derivatives are committed, and each derivative records its own hash."
+  },
+  "capabilities": ["static", "interactive"],
+  "platforms": {
+    "web": { "renderer": "three.js", "status": "current" },
+    "mini": { "renderer": "platform-adapter", "status": "planned" }
+  },
+  "materials": [
+    { "id": "finish-a", "class": "diffuse", "role": "body" },
+    { "id": "finish-b", "class": "metal", "role": "trim" }
+  ],
+  "hotspots": [
+    {
+      "id": "closure",
+      "node": "shell",
+      "fallbackContent": "card-closure",
+      "label": "Closure detail"
+    }
+  ],
+  "cameraPresets": [
+    { "id": "front", "intent": "straight-on silhouette check" },
+    { "id": "three-quarter", "intent": "form and material read" },
+    { "id": "macro", "intent": "surface and edge detail" }
+  ],
+  "sceneNodes": [
+    {
+      "id": "shell",
+      "semantic": "approved-product-shell",
+      "materialIds": ["finish-a", "finish-b"],
+      "cameraPreset": "front",
+      "assetVariants": {
+        "web": "shell-web",
+        "mini": null,
+        "fallback": "poster"
+      }
+    }
+  ],
+  "assets": [
+    {
+      "id": "shell-web",
+      "path": "assets/demo-vessel.glb",
+      "role": "runtime",
+      "sha256": "6f1ed002ab5595859014ebf0951522d9a31c0f4c1b0b9f2d6b2f9c8b3e6a1d47"
+    },
+    {
+      "id": "poster",
+      "path": "assets/demo-poster.png",
+      "role": "fallback",
+      "privacyStatus": "derived"
+    }
+  ],
+  "fallbackContent": {
+    "poster": "poster",
+    "failure": "2d-card"
+  }
+}

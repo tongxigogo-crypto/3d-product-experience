@@ -22,11 +22,11 @@ At minimum capture desktop and phone-sized evidence for:
 1. initial loading and poster/failure fallback;
 2. default front view;
 3. representative orbit/zoom and nearest-label view;
-4. each new experience state (for opening: mouth, stopper, cap interior, top artwork);
+4. each new experience state (for opening: aperture, closure, part interior, top artwork);
 5. restore/Escape and Home;
 6. reduced-motion and keyboard/screen-reader path where relevant.
 
-Check silhouette, proportions, label legibility, material response, light/highlight obstruction, occlusion, subject hierarchy, safe-area cropping, touch-target separation, and whether a gesture conflicts with a button. Do not accept “looks right” from a single angle.
+Check silhouette, proportions, surface typography legibility, material response, light/highlight obstruction, occlusion, subject hierarchy, safe-area cropping, touch-target separation, and whether a gesture conflicts with a button. Do not accept “looks right” from a single angle.
 
 For runtime decals or transparent artwork overlays, verify their transform and
 occlusion contract explicitly: parent them to the product/part coordinate

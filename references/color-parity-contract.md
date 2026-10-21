@@ -2,12 +2,14 @@
 
 Use this gate whenever the same approved product is rendered by different engines, Three.js revisions, devices, Web/Mini adapters, or compression paths. Visual review is required after measurement, but eyesight alone must never approve color parity.
 
-## 0. Automated pipeline (validated reference)
+## 0. Automated pipeline (reference layout)
 
-This repository has proven a repeatable, dependency-free capture-and-compare pipeline. Reuse it for every new product or color before any manual tuning. Structure:
+A repeatable, dependency-free capture-and-compare pipeline is described here as
+a layout to copy into your own project. It is a contract, not a shipped tool:
+this repository does not contain these files. Structure:
 
 ```text
-scripts/color-parity/
+color-parity/
   probes.json            # semantic probe definitions (relative coords + masks + tolerances)
   web-capture.js         # paste into DevTools console; captures web-probes.json
   color-metrics.mjs      # sRGB -> CIE Lab (D65), CIEDE2000, CIE76; no dependencies
@@ -37,8 +39,8 @@ eyeball comparison.
   invalidates earlier captures and `diff-report.json` files. Recapture both sides
   or explicitly mark the old report stale; never combine current code with an
   older candidate's screenshots or metrics.
-- Diagnose by semantic material family before changing numeric color: ceramic,
-  metal, print/decal, transparent stopper, seal, liner, and cap rim. Confirm that
+- Diagnose by semantic material family before changing numeric color: diffuse
+  body, metal, print/decal, transparent, seal, and part edge. Confirm that
   glTF defaults did not accidentally make a nonmetal material metallic and that
   required tangents/environment processing are available in both renderers.
 - Correct renderer-version capability gaps in a named platform adapter. Do not
@@ -65,7 +67,7 @@ of the canvas), each with an alpha-masked median sampler:
   "sampling": { "method": "median", "shape": "square", "radius": 2, "minSamples": 5 },
   "probes": [
     {
-      "name": "celadon-body",
+      "name": "body-main",
       "rx": 0.38, "ry": 0.5,
       "sampling": { "method": "median", "shape": "square", "radius": 3, "minSamples": 15,
                     "mask": { "alphaMin": 200 } },
