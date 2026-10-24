@@ -45,4 +45,4 @@ changelog generatable. One logical change per commit.
 
 ## License
 
-By contributing you agree your contribution is licensed under MIT.
+By contributing you agree your contribution is licensed under CC-BY-NC-4.0.

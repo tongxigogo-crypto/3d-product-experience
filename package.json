@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "description": "Contract toolkit for Three.js/glTF product viewers: freeze the approved asset, keep facts separate from demo assumptions, and gate changes on visual evidence.",
   "type": "module",
-  "license": "MIT",
+  "license": "CC-BY-NC-4.0",
   "bin": {
     "p3d": "./src/cli.mjs"
   },

@@ -148,7 +148,12 @@ Honest scope, at `0.2.0`:
 See [CONTRIBUTING.md](CONTRIBUTING.md). Manifests from real products (with the
 brand details removed) are the most useful contribution.
 
-## License
+## License & Commercial Restrictions
 
-MIT. The `references/` documents are original prose; third-party libraries named
-in the research matrix are referenced, not vendored.
+This project is licensed under the **[Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)](LICENSE)**. The `references/` documents are original prose; third-party libraries named in the research matrix are referenced, not vendored.
+
+### ⚠️ Non-Commercial & Platform Redistribution Restrictions
+
+- **Personal & Research Use**: Free for personal learning, testing, and academic research.
+- **No Commercial Use**: You may not use this material (prompts, skill manifests, contracts, schemas, or source code) for commercial purposes without explicit prior written authorization.
+- **No Paid Marketplace / Platform Resale**: Explicitly prohibited from packaging, repackaging, or listing this project as a paid skill, tool, or MCP on any third-party agent marketplace or platform (including but not limited to Tencent WorkBuddy, Dify, Coze, GPT Store, etc.).
