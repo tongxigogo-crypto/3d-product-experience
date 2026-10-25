@@ -12,7 +12,8 @@ Build an evolvable product-viewer experience without silently changing the appro
 Use the workflow for:
 
 - Three.js + GLB/glTF product pages, H5 demos, and product detail modules.
-- Cleanup or reuse of Hunyuan AI or other generated 3D candidates.
+- Soft goods, garments, and apparel viewer experiences (`apparel-garment`).
+- Cleanup, decimation, and recovery of Hunyuan 3D, Tripo, or other AI-generated candidates.
 - Static opening, assembly, reveal, or disassembly states that are not yet a measured digital twin.
 - Product viewers that must work on desktop and touch devices and later share content with a Mini Program.
 - Evaluating a Three.js/GitHub package before it becomes a production dependency.
@@ -21,7 +22,7 @@ Use the workflow for:
 
 1. **Freeze the approved baseline.** Record the path and SHA-256 of every accepted asset before editing. Never overwrite it, rescale it in place, or let a platform-compressed variant replace it. Create a versioned derivative such as `*-open-mode.glb` and keep a reversible manifest.
 2. **Keep facts separate from demo assumptions.** Label guessed dimensions, cavity depth, cap placement, lighting, and static poses as `demo`. Do not present a photo-based guess as a 1:1 digital twin. Measurements, tolerances, threads, and real motion require their own evidence and phase.
-3. **Preserve the silhouette and identity.** A requested detail must not change the approved product shell, parts, surface proportions, color, typography, material response, or camera baseline unless the user explicitly approves a new product revision. Compare front, side, three-quarter, and macro views after every geometry/material change.
+3. **Preserve the silhouette and identity.** A requested detail must not change the approved bottle, cap, label proportions, color, typography, material response, or camera baseline unless the user explicitly approves a new product revision. Compare front, side, three-quarter, and macro views after every geometry/material change.
 4. **Separate source, derivative, and runtime assets.** Keep editable AI/Blender sources and build artifacts outside `public/` when possible. Store provenance and hashes; make runtime GLBs reproducible or explain why they are hand-authored.
 5. **Protect private references.** Original phone photos, GPS EXIF, private customer material, and unlicensed source files stay local. Strip location metadata and create a no-location derivative before any GitHub or deployment handoff. Never place raw reference paths in a public manifest.
 6. **No research-only integration.** A README, benchmark, or GitHub repository is not evidence that a package works in this product. A package enters production only after a scoped POC, pinned versions, platform/license review, fallback, and visual/performance evidence.
@@ -37,17 +38,16 @@ implementation. For modeling routes, Blender state, checkpoints, and Current →
 V1 → Future boundaries, read `references/product3d-production-boundary.md` and
 the project-local `docs/product3d/` audit only when the task concerns modeling
 architecture or production boundaries. Engineering diagnostics never
-replace user visual acceptance. External research remains **unverified** until a
+replace user visual acceptance. External research remains **待核验** until a
 scoped POC or official source confirms it.
 
-For a new 3D task, before the baseline pass, check whether the project — or
-your own knowledge base — already keeps a 3D research / capability registry for
-the stack in use, and choose the route that matches the request once for that
-task. A registry is a retrieval order, not an automatic package choice; project
-code, lockfiles, and acceptance evidence remain authoritative. If there is no
-documented gap, default to `reuse`. Only after recording a gap,
-version/license, scoped POC, fallback, and rollback may you search GitHub,
-install a package, or change renderer.
+For a new 3D task, before the baseline pass, check your local 3D Research /
+Capability Registry (or workspace knowledge base) and choose the route that
+matches the request once for that task. It is a retrieval order, not an
+automatic package choice; project code, lockfiles, and acceptance evidence
+remain authoritative. If there is no documented gap, default to `reuse`. Only
+after recording a gap, version/license, scoped POC, fallback, and rollback may
+you search GitHub, install a package, or change renderer.
 
 ### 1. Establish the baseline and evidence map
 
@@ -92,13 +92,14 @@ Do not extract a large SDK after one product. Add a second product contract test
 
 ### 4. Handle candidates and product-specific states
 
-For AI/generated candidates, read `references/ai-model-provenance-and-recovery.md`
-for provenance, privacy, quarantine, UV, and material rules. For Blender
-production boundaries and product-family modeling routes, use
-`references/product3d-production-boundary.md` and the project audit. For an
-opening/reveal state, keep parts, pivots, camera snapshots, restore behavior,
-and reduced-motion checks in the product manifest and evidence record. A
-candidate never replaces the approved runtime asset before visual acceptance.
+For AI/generated candidates (Hunyuan3D, Tripo, etc.), read `references/ai-model-provenance-and-recovery.md`
+for provenance, privacy, quarantine, UV, decimation, and material rules. Run the 4-step recovery pipeline
+(headless decimation via `scripts/decimate_ai_glb.py`, metric transform normalization, separated orthographic
+dual-sided UV re-projection, and PBR Sheen material injection). For soft goods (`apparel-garment`) and Blender
+production boundaries, use `references/product3d-production-boundary.md`, `references/product-capability-contract.md`,
+and `references/fabric-apparel-recipe.md`: **prioritize the AI Image-to-3D + 4-step recovery pipeline as the primary commercial route** (superior organic 3D silhouette and fabric drape), and use pure procedural quad-cage lofting (`scripts/blender_headless_garment.py`, user visual acceptance baseline 60/100) only when external 3D base meshes are prohibited. Subagent/Adversarial Critic scores are engineering diagnostics only and never replace user visual acceptance.
+For an opening/reveal state, keep parts, pivots, camera snapshots, restore behavior, and reduced-motion checks in
+the product manifest and evidence record. A candidate never replaces the approved runtime asset before visual acceptance.
 
 ### 5. Integrate Three.js research incrementally
 
@@ -111,7 +112,7 @@ Keep the existing Three.js/GLTFLoader/KTX2/Meshopt/LOD path unless a measured re
 5. preserve the current fallback and visual baseline;
 6. record accept, defer, or reject with deletion/rollback steps.
 
-Do not install indoor-360 packages for a single-product task. Do not replace a realtime viewer with a scroll/pre-rendered system without an explicit product decision.
+Do not install indoor-360 packages for a bottle task. Do not replace a realtime viewer with a scroll/pre-rendered system without an explicit product decision.
 
 ### 5.1 Spatial scene POC
 
@@ -145,7 +146,7 @@ The exact command names are project-owned. At minimum verify:
 - loading failure, WebGL recovery, poster/2D fallback, reduced motion, keyboard, screen reader, and touch behavior remain usable;
 - if `spatial` is enabled, `SceneManifest` anchors resolve to the correct Product Viewer, the host restores a versioned `SceneSnapshot`, an unavailable Viewer leaves the scene usable, and the desktop/mobile return path has browser evidence;
 - when opening/reveal is in scope, opening/restore/Home state transitions preserve the camera and do not conflict with mobile rotation gestures;
-- when a specific product is in scope, full-product silhouette, part side/interior, opening/closure, top artwork, surface typography, material response, subject hierarchy, and safe areas are correct at desktop and phone sizes;
+- when a bottle product is in scope, full-bottle silhouette, cap side/interior, mouth/stopper, top artwork, label typography, material response, subject hierarchy, and safe areas are correct at desktop and phone sizes;
 - warnings are classified and recorded rather than silently ignored.
 
 Capture command output, hashes, browser screenshots or video, viewport/device, and known limitations in an evidence record. Never call a change final when only a build passed.
@@ -167,12 +168,20 @@ Keep the engine extensible through data and adapters, not speculative abstractio
 
 - `references/product3d-production-boundary.md` — modeling/runtime boundary, Blender state rules, and the Current → V1 → Future maturity contract.
 - `references/ai-model-provenance-and-recovery.md` — generated-model failure modes, provenance, and privacy rules.
+- `references/image-to-3d-pipeline.md` — step-by-step SOP for 4-step AI GLB reconstruction (`--mode rebuild`) and 1-base-GLB instant batch SKU generation (`--mode swap` / `--mode batch`).
 - `references/product-capability-contract.md` — renderer-neutral manifest shape and complexity ladder.
 - `references/research-integration-matrix.md` — researched Three.js/GitHub options and the POC gates for each.
 - `references/poc-decision-record.md` — comparable plugin POC measurements, thresholds, and accept/defer/reject record.
 - `references/qa-and-evidence-contract.md` — visual, automated, accessibility, performance, and evidence gates.
 - `references/color-parity-contract.md` — repeatable cross-renderer capture conditions, semantic region sampling, material-specific CIEDE2000 gates, and invalid-evidence rules.
+- `references/fabric-apparel-recipe.md` — physical simulation recipe for garments, PBR Sheen parameters, quad cage topology, drop shoulders, and dual-sided zero-bleed UV projection.
+- `references/glass-liquid-optics-recipe.md` — optical PBR recipes for transmissive glass, liquids, IOR, chromatic dispersion, and caustic approximations.
+- `references/single-file-bundle-guide.md` — esbuild IIFE bundling guidelines for standalone offline HTML viewers, inlining Base64 GLB assets, and avoiding browser sandbox CORS issues.
+- `references/state-engine-architecture.md` — decoupling interactive state machines and scientific/physical laws from Three.js rendering loops.
 - `scripts/validate-product-manifest.mjs` — dependency-free structural validator for a product manifest; run basic mode for legacy manifests and `--strict --strict-privacy` for new product contracts.
 - `scripts/verify-media-privacy.mjs` — read-only `exiftool` check for GPS/location metadata before a media derivative enters GitHub or deployment.
+- `scripts/decimate_ai_glb.py` — AI-generated GLB 4-step reconstruction tool (`--mode rebuild`) AND 1-base-GLB instant multi-SKU texture-swap/batch bundler (`--mode swap` / `--mode batch`, ~1s/SKU without launching Blender).
+- `scripts/blender_headless_lathe.py` — Blender headless parametric rotational lathe script for bottles, jars, and cylindrical containers.
+- `scripts/blender_headless_garment.py` — Blender headless parametric quad cage lofting script for T-shirts and garments without external GLBs.
 
 Use the references only when the corresponding decision is in scope. Do not copy this Skill’s example values, private paths, raw photos, or proprietary GLBs into another product.

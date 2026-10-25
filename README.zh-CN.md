@@ -20,7 +20,8 @@
 | 层 | 位置 | 作用 |
 | --- | --- | --- |
 | 契约 | `references/product-capability-contract.md` | 渲染器无关的产品清单：语义节点、材质、热点、机位预设、分平台资产变体、兜底、来源、能力标记 |
-| 校验器 | `src/`（零依赖） | `p3d validate --file manifest.json --strict --strict-privacy` |
+| 几何与材质配方 | `references/fabric-apparel-recipe.md`<br>`references/image-to-3d-pipeline.md`<br>`references/glass-liquid-optics-recipe.md` | 服饰软质产品（`apparel-garment`）PBR 微绒毛 Sheen、J型袖窿、车线雕刻；AI 图生 3D 四步法重构与一模多款极速换图批量生成（1秒/款）；光学玻璃透明与液体折射配方 |
+| 校验与批处理工具 | `src/` & `scripts/`（零外部 npm 依赖） | `p3d validate` 清单校验；`decimate_ai_glb.py`（AI 模型四步法重构与单母版多款批量生成器）；`blender_headless_garment.py` 与 `blender_headless_lathe.py` |
 | Agent 技能 | `SKILL.md` | 给 AI 编码 Agent 的执行步骤：立基线 → 分能力 → 建契约 → 记来源 → 分层验证 → 收口 |
 
 ## 快速开始

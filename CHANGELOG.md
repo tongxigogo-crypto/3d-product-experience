@@ -4,6 +4,25 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-10-25
+
+### Added
+
+- **Apparel and Soft Goods Pipeline (`apparel-garment`)**:
+  - `references/fabric-apparel-recipe.md`: 260gsm combed-cotton PBR Sheen recipes, J-curve tailored armscyes (`W_SHOULDER > W_PIT`), local-centroid inner cuff contraction (preventing underarm lining penetration), and post-smoothing (`Subsurf + CorrectiveSmooth`) hairline (`1.1 mm`) stitch groove etching.
+  - `references/image-to-3d-pipeline.md`: step-by-step SOP for 4-step AI GLB reconstruction (`--mode rebuild`) and 1-base-GLB multi-SKU batch texture swapping (`--mode swap` / `--mode batch`).
+  - `references/glass-liquid-optics-recipe.md`: optical PBR recipes for transmissive glass, liquids, IOR, chromatic dispersion, and caustic approximations.
+  - `references/single-file-bundle-guide.md`: esbuild IIFE bundling guidelines for standalone offline HTML viewers, inlining Base64 GLB assets, and avoiding browser sandbox CORS issues.
+  - `references/state-engine-architecture.md`: decoupling interactive state machines and scientific/physical laws from Three.js rendering loops.
+- **Headless Pipeline Scripts**:
+  - `scripts/decimate_ai_glb.py`: dual-mode utility supporting 4-step headless Blender reconstruction (`--mode rebuild`) and instant 1-base-GLB texture swapping & standalone HTML bundling (`--mode swap` / `--mode batch`, ~1s/SKU without Blender).
+  - `scripts/blender_headless_garment.py`: parametric quad-cage lofting script for zero-external-model apparel baselines with J-curve armscye and hairline seam grooves.
+  - `scripts/blender_headless_lathe.py`: parametric rotational lathe generator for double-walled bottles, jars, and cylindrical glassware.
+
+### Changed
+
+- Updated `SKILL.md` to classify soft goods (`apparel-garment`) and set route priority: AI Image-to-3D + 4-step recovery as the primary commercial production route, and procedural quad-cage lofting as the zero-external-model fallback baseline.
+
 ## [0.2.0] - 2026-10-22
 
 The skill becomes a toolkit: the contract is now enforced by code, not only

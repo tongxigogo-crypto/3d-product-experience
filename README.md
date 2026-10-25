@@ -52,11 +52,11 @@ const { valid, errors, summary } = validateManifest(manifest, {
 });
 ```
 
-**3. An agent skill** — `SKILL.md` is the operating procedure for an AI coding
+**3. An agent skill and physical recipes** — `SKILL.md` is the operating procedure for an AI coding
 agent: establish the baseline, classify the capability, build the contract,
 record provenance, validate in layers, close the iteration. `references/` holds
-the deeper contracts (QA and evidence, colour parity, POC decisions, research
-integration). Load it with any agent that reads `SKILL.md`.
+the deeper contracts and physical recipes (QA and evidence, colour parity, POC decisions,
+apparel fabric sheen & J-curve armscye recipes, AI image-to-3D 4-step reconstruction, and 1-base-GLB multi-SKU batch texture swapping). `scripts/` provides headless Blender and Python automation (`decimate_ai_glb.py`, `blender_headless_garment.py`, `blender_headless_lathe.py`). Load it with any agent that reads `SKILL.md`.
 
 ## Quick start
 
