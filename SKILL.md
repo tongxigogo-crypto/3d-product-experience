@@ -185,3 +185,18 @@ Keep the engine extensible through data and adapters, not speculative abstractio
 - `scripts/blender_headless_garment.py` — Blender headless parametric quad cage lofting script for T-shirts and garments without external GLBs.
 
 Use the references only when the corresponding decision is in scope. Do not copy this Skill’s example values, private paths, raw photos, or proprietary GLBs into another product.
+
+## License
+
+Source: `tongxigogo-crypto` — <https://github.com/tongxigogo-crypto/3d-product-experience>
+
+Licensed under [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/). **Non-commercial use only.**
+
+If you repost, translate, summarize, rewrite, or repackage this file — in whole or in part — you must:
+
+1. credit `tongxigogo-crypto` and link back to the repository above;
+2. link to the license;
+3. state what you changed.
+
+Translation and rewriting are adaptations, not exemptions. Removing this block does not remove the obligation. Commercial use, paid repackaging and listing on any agent marketplace require prior written permission. Full terms: <https://github.com/tongxigogo-crypto/3d-product-experience/blob/main/NOTICE.md>
+

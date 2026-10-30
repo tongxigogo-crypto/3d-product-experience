@@ -2,6 +2,12 @@
 
 [![ci](https://github.com/tongxigogo-crypto/3d-product-experience/actions/workflows/ci.yml/badge.svg)](https://github.com/tongxigogo-crypto/3d-product-experience/actions/workflows/ci.yml)
 
+> **License: [CC BY-NC 4.0](LICENSE) — non-commercial only.**
+> Reposting, translating, summarizing or rewriting this content requires **credit + a link back + a note of what you changed**. Commercial use, paid repackaging and platform resale are **not permitted** without written authorization.
+> Full terms and the attribution checklist: **[NOTICE.md](NOTICE.md)**
+>
+> 中文：本项目**禁止商用**，转载/翻译/改写**必须署名并回链**。细则见 [NOTICE.md](NOTICE.md)。
+
 A contract toolkit for Three.js / glTF product viewers.
 
 It does not render anything. It stops a product viewer from silently changing an
@@ -157,3 +163,15 @@ This project is licensed under the **[Creative Commons Attribution-NonCommercial
 - **Personal & Research Use**: Free for personal learning, testing, and academic research.
 - **No Commercial Use**: You may not use this material (prompts, skill manifests, contracts, schemas, or source code) for commercial purposes without explicit prior written authorization.
 - **No Paid Marketplace / Platform Resale**: Explicitly prohibited from packaging, repackaging, or listing this project as a paid skill, tool, or MCP on any third-party agent marketplace or platform (including but not limited to Tencent WorkBuddy, Dify, Coze, GPT Store, etc.).
+
+### Attribution is mandatory
+
+CC BY-NC 4.0 requires **three things at once** when you share or adapt this work:
+
+1. **Credit** — name `tongxigogo-crypto` and link back to this repository;
+2. **License notice** — link to <https://creativecommons.org/licenses/by-nc/4.0/>;
+3. **Indicate changes** — say what you translated, cut, reordered or rewrote.
+
+Translation, summarization and rewriting are legally **adaptations**, not exemptions. Stripping the license block, or naming the author only in SEO metadata while the body carries no credit and no link, does not satisfy any of the three.
+
+The full checklist, the list of recorded non-compliant uses, and how to request commercial permission live in **[NOTICE.md](NOTICE.md)**.
