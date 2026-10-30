@@ -4,6 +4,31 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **`NOTICE.md`** — a plain-language companion to `LICENSE`: what is allowed, the
+  three simultaneous attribution obligations under CC BY-NC 4.0, what counts as
+  prohibited, how to request commercial permission, and how to report a
+  non-compliant repost. It also records the verified non-compliant uses of this
+  repository (first entry: 2026-10-25, `alixixi.com`), with the reproduction
+  method so anyone can check the finding.
+- **Attribution requirement** — README (EN + zh-CN) now states explicitly that
+  translation, summarization and rewriting are adaptations and therefore require
+  credit, a license link and a change note. Leaving the author only in SEO
+  metadata, or deleting the license block, does not satisfy the license.
+- **License block at the end of `SKILL.md`** — the Skill file is the artifact most
+  likely to be copied out on its own, away from `LICENSE` and `NOTICE.md`. It now
+  carries its own source, license and attribution terms.
+- **License banner at the top of `README.md` / `README.zh-CN.md`** — the
+  restriction is visible before the reader scrolls to the bottom.
+
+### Changed
+
+- `README.md` / `README.zh-CN.md` — the license sections link to `NOTICE.md`
+  instead of restating the terms in two places.
+
 ## [0.3.0] - 2026-10-25
 
 ### Added
